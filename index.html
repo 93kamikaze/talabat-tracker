@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif; /* Applied Poppins here */
+            font-family: 'Poppins', sans-serif;
             background-image: url('background.gif');
             background-size: cover;
             background-position: center;
@@ -29,6 +29,7 @@
             min-height: 100vh;
         }
 
+        /* Access Denied Overlay */
         #access-denied {
             display: none;
             background: white;
@@ -50,13 +51,17 @@
         }
 
         .logo-container img {
-            max-width: 180px;
+            max-width: 200px; /* Increased size slightly */
+            height: auto;
             margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         h2 {
             color: var(--talabat-maroon);
-            font-weight: 800; /* Extra bold Poppins */
+            font-weight: 800;
             margin-top: 0;
             margin-bottom: 25px;
             text-transform: uppercase;
@@ -74,6 +79,7 @@
             box-sizing: border-box;
             font-size: 15px;
             outline: none;
+            background-color: white;
         }
 
         input:focus, select:focus {
@@ -96,7 +102,6 @@
         }
 
         button:hover { background-color: #e65100; transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
         button:disabled { background-color: #ccc; cursor: not-allowed; }
 
         .status {
@@ -114,21 +119,19 @@
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: 600;
-            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
     <div id="access-denied">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Talabat_logo.svg/2560px-Talabat_logo.svg.png" width="150"><br><br>
         <h2 style="color:red;">ACCESS DENIED</h2>
-        <p>Please connect to the <b>talabat Office Wi-Fi</b> to use this tracker.</p>
+        <p>Please connect to the office Wi-Fi.</p>
     </div>
 
     <div class="container" id="main-app">
         <div class="logo-container">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Talabat_logo.svg/2560px-Talabat_logo.svg.png" alt="talabat logo">
+            <img src="logo.png" alt="talabat logo">
         </div>
 
         <h2>Doha Office Log</h2>
@@ -150,7 +153,12 @@
                 <option value="Sales-Food">Sales-Food</option>
             </select>
 
-            <input type="number" id="floor" placeholder="Floor Number" required>
+            <select id="floor" required>
+                <option value="" disabled selected>Select Floor</option>
+                <option value="1">Floor 1</option>
+                <option value="6">Floor 6</option>
+                <option value="26">Floor 26</option>
+            </select>
 
             <select id="action" required>
                 <option value="Time-In">Time-In</option>
@@ -166,9 +174,7 @@
     <div class="signature">Made by Batman®</div>
 
     <script>
-        // --- 1. OPTIONAL IP SECURITY ---
-        // To use: Search "What is my IP" on Google while on office WiFi.
-        // Replace YOUR_OFFICE_IP_HERE and uncomment verifyIP();
+        // --- 1. IP SECURITY ---
         const OFFICE_IP = "YOUR_OFFICE_IP_HERE"; 
 
         async function verifyIP() {
@@ -179,10 +185,10 @@
                     document.getElementById('main-app').style.display = 'none';
                     document.getElementById('access-denied').style.display = 'block';
                 }
-            } catch (e) { console.log("Security Bypass Mode"); }
+            } catch (e) { console.log("Offline/Dev Mode"); }
         }
         
-        // verifyIP(); // Delete the // at the start of this line to enable IP blocking.
+        // verifyIP(); // Uncomment to enable IP checking
 
         // --- 2. LOGIC ---
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxF6pSHddt91U7xVkNFJqgpy39U6rf4g7A-r_vdHh_y6rHKciUWL-Z_HW5BfBAgUCPZ/exec';
