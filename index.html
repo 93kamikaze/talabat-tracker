@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>talabat Doha Office Tracker</title>
+    <style>
+        :root {
+            --talabat-orange: #ff5a00;
+            --talabat-maroon: #480d0d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            /* Using the talabat toolkit background from Behance */
+            background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/1400/017772231747747.6874e0d4c676c.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--talabat-maroon);
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--talabat-orange);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #e65100; }
+        button:disabled { background-color: #ccc; }
+
+        .status {
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--talabat-maroon);
+            min-height: 24px;
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Talabat_logo.svg/2560px-Talabat_logo.svg.png" alt="talabat logo">
+        </div>
+
+        <h2>Doha Office Log</h2>
+
+        <form id="timeForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            
+            <select id="dept" required>
+                <option value="" disabled selected>Select Department</option>
+                <option value="HR">HR</option>
+                <option value="IT">IT</option>
+                <option value="NFV">NFV</option>
+                <option value="PR">PR</option>
+                <option value="Projects">Projects</option>
+                <option value="Cloud Kitchen">Cloud Kitchen</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Performance">Performance</option>
+                <option value="Sales-Food">Sales-Food</option>
+            </select>
+
+            <input type="number" id="floor" placeholder="Floor Number" required>
+
+            <select id="action" required>
+                <option value="Time-In">Time-In</option>
+                <option value="Time-Out">Time-Out</option>
+            </select>
+
+            <button type="submit" id="submitBtn">Submit Log</button>
+        </form>
+
+        <div id="msg" class="status"></div>
+    </div>
+
+    <div class="signature">Made by Batman®</div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxF6pSHddt91U7xVkNFJqgpy39U6rf4g7A-r_vdHh_y6rHKciUWL-Z_HW5BfBAgUCPZ/exec';
+        const form = document.getElementById('timeForm');
+        const msg = document.getElementById('msg');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const dohaTime = new Date().toLocaleString("en-US", {
+                timeZone: "Asia/Qatar",
+                hour12: true,
+                dateStyle: "medium",
+                timeStyle: "medium"
+            });
+
+            const formData = new FormData();
+            formData.append('Name', document.getElementById('name').value);
+            formData.append('Department', document.getElementById('dept').value);
+            formData.append('Floor', document.getElementById('floor').value);
+            formData.append('Action', document.getElementById('action').value);
+            formData.append('Timestamp', dohaTime);
+
+            document.getElementById('submitBtn').disabled = true;
+            msg.innerHTML = "Recording...";
+
+            fetch(scriptURL, { method: 'POST', body: formData})
+                .then(response => {
+                    msg.innerHTML = "✅ Success! Logged at " + dohaTime;
+                    form.reset();
+                    document.getElementById('submitBtn').disabled = false;
+                })
+                .catch(error => {
+                    msg.innerHTML = "❌ Connection Error. Try again.";
+                    document.getElementById('submitBtn').disabled = false;
+                });
+        });
+    </script>
+</body>
+</html>
